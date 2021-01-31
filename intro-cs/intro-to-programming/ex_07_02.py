@@ -9,7 +9,7 @@ total = 0
 count = 0
 
 for line in f:
-    if 'X-DSPAM-Confidence: 0.8475' in line:
+    if 'X-DSPAM-Confidence' in line:
         print(line)
         i = line.find(': ') + 1
         total += float(line[i:len(line)])

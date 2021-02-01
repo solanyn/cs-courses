@@ -44,3 +44,52 @@
         * Using index to access elements
     * `for friend in friends`
         * Get each element directly
+
+* Concatenating lists using +
+    * We can create a new list by adding two existing lists together
+
+* Lists can be sliced using :
+    * Remember: Just like in strings, the second number is "up to but not including"
+
+* List Methods
+    * `dir(list())` lists all list methods
+
+* Building a list from scratch
+    * We can create an empty list and then add elemetns using the append method
+    * The list stays in order and new elements are added at the end of the list
+    
+* Is something in a list?
+    * Python provides two operators that let you check if an item is in a list
+    * These logical operators return True or False
+    * They do not modify the list
+
+* Lists are in order
+    * A list can hold many items and keeps those items in the order until we do something to change the order
+    * A list can be sorted (i.e., change its order)
+    * The sort method (unlike in strings) means "sort yourself", doesn't return anything
+
+* Built-in Functions and Lists
+    * There are a number of functions built into Python that take lists as parameters
+    * Remember the loops we built? These are much simpler.
+
+* Loops or lists?
+    * If we have a program that takes the inputs to find the average until the user types done
+    * Lists will use much more memory if we have millions of numbers
+
+* Best friends: Strings and lists
+    * `string.split()` breaks a string by a character or substring and returns the result as a list
+    * We can then loop through this list
+    * When you do not specify a delimiter, multiple spaces are treated like one delimiter
+        * Lots of spaces will still split into the words any whitespace characters, including newlines or tabs
+    * You can specify what delimiter character to use in the splitting
+
+* The double split pattern
+    * Sometimes we split a line one way and then grab one of the pieces of the line and split that piece again
+    * Split a line of from line in email and then take the email domain name
+    * Cleaner than `find()`
+
+* Debugging
+    * Print the line before it throws a traceback
+    * Print the iterations to check
+    * Guardian pattern are error checks that protects a condition which could throw a possible error
+

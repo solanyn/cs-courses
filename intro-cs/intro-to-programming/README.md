@@ -6,8 +6,8 @@ https://www.py4e.com/lessons
 
 # Table of Contents
 
-- [Chapter 1 - Why Program?](#chapter-1---why-program-)
-- [Chapter 2 - Variables, Expressions and Statements](#chapter-2---variables--expressions-and-statements)
+- [Why Program?](#why-program-)
+- [Variables, Expressions and Statements](#variables--expressions-and-statements)
 - [Conditionals](#conditionals)
 - [Functions](#functions)
 - [Loops and Iteration](#loops-and-iteration)
@@ -157,7 +157,7 @@ https://www.py4e.com/lessons
   * [Warning: This dataset is > 1GB](#warning--this-dataset-is---1gb)
 
 
-# Chapter 1 - Why Program?
+# Why Program?
 
 * Computers want to be helpful
     * Built for one purpose - to do some things for us
@@ -239,7 +239,7 @@ https://www.py4e.com/lessons
         * Repeated
             * Iteration statements
 
-# Chapter 2 - Variables, Expressions and Statements
+# Variables, Expressions and Statements
 
 * Constants
     * Fixed values are called constants

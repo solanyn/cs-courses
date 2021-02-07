@@ -1,8 +1,12 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+# Introduction to Programming
+OSSU recommends the Python for Everybody course available here:
+
+https://www.py4e.com/lessons
+
 **Table of Contents**  
 
-- [Information about the course](#introduction-to-programming)
 - [Why Program?](#why-program)
 - [Variables, Expressions and Statements](#variables-expressions-and-statements)
 - [Conditionals](#conditionals)
@@ -155,11 +159,6 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-# Introduction to Programming
-OSSU recommends the Python for Everybody course available here:
-
-https://www.py4e.com/lessons
 
 
 # Why Program?

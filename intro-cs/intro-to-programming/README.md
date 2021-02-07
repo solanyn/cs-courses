@@ -1,4 +1,11 @@
-- [Course Information](#introduction-to-programming)
+
+# Introduction to Programming
+OSSU recommends the Python for Everybody course available here:
+
+https://www.py4e.com/lessons
+
+# Table of Contents
+
 - [Chapter 1 - Why Program?](#chapter-1---why-program-)
 - [Chapter 2 - Variables, Expressions and Statements](#chapter-2---variables--expressions-and-statements)
 - [Conditionals](#conditionals)
@@ -149,9 +156,6 @@
   * [Mailing Lists - Gmane](#mailing-lists---gmane)
   * [Warning: This dataset is > 1GB](#warning--this-dataset-is---1gb)
 
-# Introduction to Programming
-OSSU recommends the Python for Everybody course available here:
-https://www.py4e.com/lessons
 
 # Chapter 1 - Why Program?
 

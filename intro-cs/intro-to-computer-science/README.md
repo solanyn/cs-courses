@@ -162,5 +162,46 @@ https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0001-i
     * Syntax for a simple expression - `<object> <operator> <object>`
     
 * Operators on ints and floats
+    * `i+j` -> the **sum**
+    * `i-j` -> the **difference**
+    * `i*j` -> the **product**
+    * `i/j` -> division
 
+    * `i%j` -> the **remainder** when `i` is divided by `j`
+    * `i**j` -> `i` to the **power** of `j`
+
+* Binding variables and values
+    * Equal sign is an **assignment** of a value to a variable name
+    * `pi = 3.13159`
+    * `pi_approx = 22/7`
+    * Value is stored in computer memory
+    * Retrieve value associated with name or variable by invoking the name, by typing `pi`
+
+* Abstracting expressions
+    * Why give names to values of expressions?
+    * To reuse names instead of values
+    * Easier to change code later
+    ```Python
+    pi = 3.14159
+    radius = 2.2
+    area = pi*(radius*82)
+    ```
         
+
+* Programming vs math
+    * In programming, you do not "solve for x"
+    * An assignment is:
+        * Expression on the right, evaluated to a value
+        * Variable name on the left
+
+* Changing bindings
+    * Can **re-bind** variables names using new assignment statements
+    * A previous value may still be stored in memory but lost the handle for it
+    * Value for area does not change until you tell the computer to do the calculation again
+
+    ```Python
+    pi = 3.14159
+    radius = 2.2
+    area = pi*(radius*82)
+    radius = radius + 1
+    ```

@@ -205,3 +205,200 @@ https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0001-i
     area = pi*(radius*82)
     radius = radius + 1
     ```
+
+# L2: Branching and Iteration
+
+* Strings
+    * Letters, special characters, spaces, digits
+    * Enclose in **quotation marks or single quotes**
+    * **Concatenate** strings
+    ```Python
+    hi = "hello there"
+
+    name = "ana"
+
+    greet = hi + name
+
+    greeting = hi + " " + name
+    ```
+    * do some **operations** on a string as defined in Python docs
+        * `silly = hi + " " + name * 3`
+
+* Input/Output: `input("")`
+    * Prints whatever is in the quotes
+    * User types in something and hits enter
+    * Binds that value to a variable
+    ```Python
+    text = input("Type anything... ")
+    print(5*text)
+    ```
+    * `input` **gives you a string** so must cast if working with numbers
+    ```Python
+    num = int(input("Type a number... "))
+    print(5 * num)
+    ```
+
+* Comparison operators on `int`, `float`, `string`
+    * `i` and `j` are variable names
+    * comparisons below evaluate to a boolean
+    ```Python
+    i > j
+    i >= j
+    i < j
+    i <= j
+    i == j # equality test, True if i is the same as j
+    i != j # inequality test, True if i not the same as j
+    ```
+* Logic operators on bools
+    * `a` and `b` are variable names (with Boolean values)
+    ```Python
+    not a # True if a is False
+          # False if a is True
+    a and b # True if both are True
+    a or b # True if either or both are True
+    ```
+
+* Control flow - Branching
+    * `<condition>` has a value `True` or `False`
+    * Evaluate expressions in that block if `<condition>` is `True`
+
+    ```Python
+    if <condition>:
+        <expression>
+        <expression>
+        ...
+    ```
+
+    ```Python
+    if <condition>:
+        ...
+    else:
+        <expression>
+        <expression>
+        ...
+    ```
+    
+    ```Python
+    if <condition>:
+        ...
+    elif <condition>:
+        <expression>
+        <expression>
+        ...
+    else:
+        ...
+    ```
+
+* Indentation
+    * Matters in Python
+    * How you denote blocks of code
+    ```Python
+    x = float(input("Enter a number for x: "))
+    y = float(input("Enter a number for y: "))
+    if x == y:
+        print("x and y are equal")
+        if y != 0:
+            print("therefore, x / y is", x/y)
+    elif x < y:
+        print("x is smaller")
+    else:
+        print("y is smaller")
+    print("thanks!")
+    ```
+
+* Legend of Zelda - Lost Woods
+    * Keep going right, takes you back to this same screen, stuck in a loop
+    * Instead of infinite amount of if statements
+    * We use a while loop
+
+* Control flow: `while` loops
+```Python
+while <condition>:
+    <expression>
+    <expression>
+    ...
+```
+
+    * <condition> evaluates to a Boolean
+    * If <condition>  is True, do all the steps inside the while code block
+    * Check <condition> again
+    * Repeat until <condition> is False
+
+* `while` loop example
+```Python
+n = input("You're in the Lost Forest. Go left or right? ")
+while n == "right":
+    n = input("You're in the Lost Forest. Go left or right? ")
+print("You got out of the Lost Forest!")
+```
+
+* Control flow: `while` and `for` loops
+    * Iterate through numbers in a sequence
+
+```Python
+# More complicated with while loop
+n = 0
+while n < 5:
+    print(n)
+    n = n+1
+
+# Shortcut with for loop
+for n in range(5):
+    print(n)
+```
+
+* Control flow: `for` loops
+```Python
+for <variable> in range(<some_num>):
+    <expression>
+    ...
+```
+
+    * Each time through the loop, `<variable>` takes a value
+    * First time, `<variable>` starts at the smallest value
+    * Next time, `<variable>` gets the prev value + 1
+    * etc.
+
+* `range(start, stop, step)`
+    * Default values are `start = 0` and `step = 1` and optional
+    * Loop until value is `stop - 1`
+    
+    ```Python
+    mysum = 0
+    for i in range(7, 10):
+        mysum += i
+    print(mysum)
+
+    mysum = 0
+    for i in range(5, 11, 2):
+        mysum += i
+    print(mysum)
+    ```
+
+* `break` statement
+    * Immediately exits whatever loop it is in
+    * Skips remaining expressions in code block
+    * Exits only innermost loop!
+
+    ```Python
+    while cond1:
+        while cond2:
+            expression_a
+            break
+            expression_b # Does not get evaluated
+        # To here
+        expression_c
+    ```
+
+* `for` vs `while` loops
+    * For loops
+        * **Know** number of iterations
+        * Can **end early** via `break`
+        * Uses a **counter**
+        * **Can rewrite** a `for` loop using a `while` loop
+
+    * While loops
+        * **Unbounded** number of iterations
+        * Can **end early** via `break`
+        * Can use a **counter but must initialise** before loop and increment it inside loop
+        * **May not be able to rewrite a `while` loop using a `for` loop

@@ -4,6 +4,7 @@
 
 - [Introduction to Computer Science](#introduction-to-computer-science)
 - [L1: What is Computation](#l1-what-is-computation)
+- [L2: Branching and Iteration](#l2-branching-and-iteration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -402,3 +403,189 @@ for <variable> in range(<some_num>):
         * Can **end early** via `break`
         * Can use a **counter but must initialise** before loop and increment it inside loop
         * **May not be able to rewrite a `while` loop using a `for` loop
+
+# L3: String manipulation, guess-and-check, approximations, bisection
+* Strings
+    * Think of as a **sequence** of case sensitive characters
+    * Can compare strings with ==, >, < etc.
+    * `len()` is a function used to retrieve the **length** of the string in the parentheses
+    ```Python
+    s = "abc"
+    len(s) # Evaluates to 3
+    ```
+
+    * Square brackets used to perform **indexing** into a string to get the value at a certain index/position
+    ```Python
+    s = "abc"
+       # 012 <- indexing always starts at 0
+
+    s[0] # evaluates to "a"
+    s[1] # evaluates to "b"
+    s[2] # evaluates to "c"
+    s[3] # trying to index out of bounds, error
+    s[-1] # evaluates to "c"
+    s[-2] # evaluates to "b"
+    s[-3] # evaluates to "a"
+    ```
+
+    * Can slice strings using `[start:stop:step]`
+    * If given two numbers, `[start:stop], step=1` by default
+    * You can also omit number and leave just colons
+
+    ```Python
+    s = "abcdefgh"
+    s[3:6] # evaluates to "def", same as s[3:6:1]
+    s[3:6:2] # evaluates to "df"
+    s[::] # evaluates to "abcdefgh", same as s[0:len(s):1]
+    s[::-1] # evaluates to "hgfedcba" same as s[-1:(len(s)+1):-1]
+    s[4:1:-2] # evaluates to "ec"
+    ```
+
+    * Strings are "**immutable**" - cannot be modified
+    ```Python
+    s = "hello"
+    s[0] = 'y' # gives an error
+    s = 'y'+s[1:len(s)] # is allowed, s bound to new object
+    ```
+
+* `for` loops recap
+    * `for` loops have a **loop variable** that iterates over a set of values
+    ```Python
+    for var in range(4): # var iterates over values 0,1,2,3
+        <expressions> # expressions inside loop executed with each value for var
+
+    for var in range(4, 6): # var iterates over values 4,5
+        <expressions>
+    ```
+    * `range` is a way to iterate over numbers, but a for loop variable can **iterate over any set of values**, not just numbers!
+
+* Strings and loops
+    * These do code snippets do the same thing
+    * Bottom one is more "pythonic"
+    ```Python
+    s = "abcdefgh"
+    for index in range(len(s)):
+        if s[index] == 'i' or s[index] == 'u':
+            print("There is an i or u")
+
+    for char in s:
+        if char == 'i' or char == 'u':
+            print("There is an i or u")
+    ```
+
+* Code example: robot cheerleaders
+    * Using a while loop
+    ```Python
+    an_letters = "aefilmorsxAEFHILMNORSX"
+
+    word = input("I will cheer for you! Enter a word: ")
+    times = int(input("Enthusiasm level (1-10): "))
+
+    i = 0
+    while i < len(word):
+        char = word[i]
+        if char in an_letters:
+            print("Give me an " + char + "! " + char)
+        else:
+            print("Give me an " + char + "! " + char)
+        i += 1
+    print("What does that spell?")
+    for i in range(times):
+        print(word, "!!!")
+    ```
+
+    * Using a for loop
+    ```Python
+    an_letters = "aefilmorsxAEFHILMNORSX"
+
+    word = input("I will cheer for you! Enter a word: ")
+    times = int(input("Enthusiasm level (1-10): "))
+
+    for char in word:
+        if char in an_letters:
+            print("Give me an " + char + "! " + char)
+        else:
+            print("Give me an " + char + "! " + char)
+        i += 1
+    print("What does that spell?")
+    for _ in range(times):
+        print(word, "!!!")
+    ```
+
+* Guess-and-check - cube root
+```Python
+cube = 8
+for guess in range(abs(cube)+1):
+    if guess**3 >= abs(cube):
+        break:
+
+if guess**3 != abs(cube):
+    print(cube, 'is not a perfect cube')
+else:
+    if cube < 0:
+        guess = -guess
+    print('Cube root of '+str(cube)+' is '+str(guess))
+```
+
+* Approximate solutions
+    * **Good enough** solution
+    * Start with a guess and increment by some **small value**
+    * Keep guessing if `|guess**3-cube| >= epsilon` for some **small epsilon**
+    * Decreasing increment size -> slower program
+    * Increasing epsilon -> less accurate answer
+
+* Approximate solution - cube root
+
+```Python
+cube = 27
+epsilon = 0.01
+guess = 0.0
+increment = 0.0001
+num_guesses = 0
+while abs(guess**3 - cube) >= epsilon and guess <= cube:
+    guess += increment
+    num_guesses += 1
+print('num_guesses =', num_guesses)
+if abs(guess**3 - cube) >= epsilon:
+    print('Failed on cube root of', cube)
+else:
+    print(guess, 'is close to the cube root of', cube)
+```
+    * If cube is 10000, then we enter infinite loop (without second while condition)
+    * Add check for less than cube
+
+* Bisection search
+    * Half interval each iteration
+    * New guess is halfway in between
+
+* Bisection search - cube root
+```Python
+cube = 27
+epsilon = 0.01
+num_guesses = 0
+low = 0
+high = cube
+guess = (high + low)/2.0
+while abs(guess**3 - cube) >= epsilon:
+    if guess**3 < cube:
+        low = guess
+    else:
+        high = guess
+    guess = (high + low)/2.0
+    num_guesses += 1
+print('num_guesses =', num_guesses)
+print(guess, 'is close to the cube root of', cube)
+```
+
+* Bisection search convergence
+    * Search space
+        * First guess: n/2
+        * second guess: n/4
+        * kth guess: n/2^k
+    * Guess converges on the order of log2N steps
+    * Bisection search works when value of function varies monotonically with input
+    * Code as shown only works for positive cubes > 1 - why?
+    * Challenges 
+        * Modify to work with negative cubes! 
+        * Modify to work with x < 1! Interval needs to be larger. 
+            * Add if statement to expand interval to 0-1 if cube is between 0 and 1.

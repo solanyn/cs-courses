@@ -589,3 +589,387 @@ print(guess, 'is close to the cube root of', cube)
         * Modify to work with negative cubes! 
         * Modify to work with x < 1! Interval needs to be larger. 
             * Add if statement to expand interval to 0-1 if cube is between 0 and 1.
+
+# L4: Decomposition, Abstration and Functions
+    * How do we write code?
+        * So far...
+            * Covered language mechanisms
+            * Know how to write different files for each computation
+            * Each file is some piece of code
+            * Each code is a sequence of instructions
+        * Problems with this approach
+            * Easy for small-scale problems
+            * Messy for larger problems
+            * Hard to keep track of details
+            * How do you know the right info is supplied to the right part of the code
+    * Good programming
+        * More code not necessarily a good thing
+        * Measure good programmers by the amount of functionality
+        * Introduce **functions**
+        * Mechanism to achieve **decomposition** and **abstraction**
+
+    * Example - Projector
+        * A projector is a black box
+        * Don't know how it works
+        * Know the interface: input/output
+        * Connect any electronic to it that can communicate with that input
+        * Black box somehow converts image from input source to a wall, magnifying it
+        * **Abstraction idea** do not need to know how projector works to use it
+
+    * Example - Projector
+        * Projecting large image of Olympics decomposed into separate tasks for separate projectors
+        * Each projector takes input and produces separate output
+        * All projectors work together to produce larger image
+        * **Decomposition idea**: different devices work together to achieve an end goal
+
+    * Create structure with decomposition
+        * In projector example, separate devices
+        * In programming, divide code into **modules**
+            * Are self-contained
+            * Used to break up code
+            * Intended to be reusable
+            * Keep code organised
+            * Keep code coherent
+        * This lecture, achieve decomposition with **functions**
+        * In a few weeks, achieve decomposition with **classes**
+
+    * Suppress details with abstraction
+        * In projector example, instructions for how to use it are sufficient, no need to know how to build one
+        * In programming, think of a piece of code as a **black box**
+            * Cannot see details
+            * Do not need to see details
+            * Do not want to see details
+            * Hide tedious coding details
+        * Achieve abstraction with **function specifications** or **docstrings**
+
+    * Functions
+        * Write reusable pieces/chunks of code, called **functions**
+        * Functions are not run in a program until they are "**called**" or "**invoked**" in a program
+        * Function characteristics:
+            * Has a **name**
+            * Has **parameters** (0 or more)
+            * Has a **docstring** (optional but recommended)
+            * Has a **body**
+            * **Returns** something
+
+    * How to write and call/invoke a function
+    ```Python
+    def is_even(i):
+        """
+        Input: i, a positive int
+        Returns True if i is even, otherwise False
+        """
+        print("inside is_even")
+        return i%2 == 0
+
+    is_even(3)
+    ```
+
+    * Variable scope
+        * **Formal parameter** gets bound to the value of **actual parameter** when function is called
+        * New **scope/frame/environment** created when enter a function
+        * **Scope** is mapping of names to objects
+
+    * One warning if no `return` statement
+        * Python returns the value **None, if no `return` given**
+        * Represents absence of a value
+
+    * Functions as arguments
+        * Arguments can take on any type, even functions
+    ```Python
+    def func_a():
+        print('inside func_a')
+
+    def func_b(y):
+        print('inside func_b')
+        return y
+
+    def func_c(z):
+        print('inside func_c')
+        return z()
+
+    print(func_a())
+    # None
+    print(5 + func_b(2))
+    # 7
+    print(func_c(func_a))
+    # None calls func_a
+    ```
+
+    * Scope example
+        * Inside a function, **can access** a variable defined outside
+        * Inside a function, **cannot modify** a variable defined outside -- can using **global variables**, but frowned upon
+
+    ```Python
+    def f(y):
+        x = 1
+        x += 1
+        print(x)
+
+    x = 5
+    f(x)
+    print(x)
+
+    def g(y):
+        print(x)
+        print(x + 1)
+
+    x = 5
+    g(x)
+    print(x)
+
+    def h(x):
+        x += 1
+
+    x = 5
+    h(x)
+    print(x)
+    # Assignment error
+    ```
+
+    * Harder scope example
+        * Python Tutor is a cool tool to see how scope works
+
+    ```Python
+    def g(x):
+        def h():
+            x = 'abc' 
+        x = x + 1
+        print('g: x =', x)
+        h() 
+        return x
+
+    x = 3
+    z = g(x) # z = 4
+    ```
+
+# L5: Tuples, Lists, Aliasing, Mutability and Cloning
+    * Tuples
+        * An ordered sequence of elements, can mix element types
+        * Cannot change element values, **immutable** (like strings!)
+        * Represented with parentheses
+
+    ```Python
+    te = ()
+    t = (2, "mit", 3)
+    t[0] # 2
+    (2, "mit", 3) + (5, 6) # (2, "mit", 3, 5, 6)
+    t[1:2] # Slice tuple, evaluates to ("mit",)
+    t[1:3] # Slice tuple, evaluates to ("mit",3)
+    len(t) # 3
+    t[1] = 4 # Gives error, can't modify object
+    ```
+
+        * Conveniently used to swap variable values
+        ```Python
+        # Doesn't work
+        x = y
+        y = x
+
+        # Works
+        temp = x
+        x = y
+        y = temp
+
+        # Simultaneous assignment
+        (x, y) = (y, x)
+        ```
+        * Used to **return more than one value** from a function
+        ```Python
+        def quotient_and_remainder(x, y):
+            q = x // y
+            r = x % y
+            return (q, r)
+
+        (quot, rem) = quotient_and_remainder(4,5)
+        ```
+    * Manipulating tuples
+        * Can **iterate** over tuples
+        ```Python
+        def get_data(aTuple):
+            nums = ()
+            words = ()
+            for t in aTuple:
+                nums = nums + (t[0], )
+                if t[1] not in words:
+                    words = words + (t[1], )
+            min_n = min(nums)
+            max_n = max(nums)
+            unique_words = len(words)
+            return (min_n, max_n, unique_words)
+        ```
+
+    * Lists
+        * **Ordered sequence** of information, accessible by index
+        * A list is denoted by **square brackets**, []
+        * A list contains **elements**
+            * Usually homogenous (ie, all integers)
+            * Can contain mixed types (not common)
+        * list elements can be changed so a list is **mutable**
+
+    * Indices and ordering
+    ```Python
+    a_list = []
+    L = [2, 'a', 4, [1,2]]
+    len(L)
+    # 4
+    L[0]
+    # 2
+    L[2] + 1
+    # 5
+    L[3]
+    # [1,2]
+    L[4]
+    # Error
+    i = 2
+    L[i-2]
+    # 'a'
+    ```
+
+    * Changing elements
+        * Lists are **mutable**
+        * Assigning to an element at an index changes the value
+
+        ```Python
+        L = [2, 1, 3]
+        L[1] = 5
+        ```
+        * L is now `[2, 5, 4]`, note that this is the **same object**
+
+    * Iterating over a list
+        * Compute the **sum of elements** of a list
+        * Common pattern, iterate over list elements
+        ```Python
+        total = 0
+        for i in range(len(L)):
+            total += L[i]
+
+        print(total)
+
+        total = 0
+        for i in L:
+            total += i
+        print(total)
+        ```
+        * Notice:
+            * List elements are indexed `0` to `len(L) - 1`
+            * `range(n)` goes from `0` to `n-1`
+        
+    * Operations on lists - add
+        * **Add** elements to end of list with `L.append(element)`
+        * **Mutates** the list!
+        ```Python
+        L = [2,1,3]
+        L.append(5)
+        # [2, 1, 3, 5]
+        ```
+        * What is the dot?
+            * Lists are Python objects, everything in Python is an object
+            * Objects have data
+            * Objects have methods and functions
+            * Access this information by `object_name.do_something()`
+            * Will learn more about these later
+
+        * To combine lists together use **concatenation**, + operator, to give you a new list
+        * **Mutate** list with `L.extend(some_list)`
+
+        ```Python
+        L1 = [2,1,3]
+        L2 = [4,5,6]
+        L3 = L1 + L2
+        # L3 is [2,1,3,4,5,6] L1, L2 unchanged!
+        L1.extend([0,6])
+        # L1 mutated to [2,1,3,0,6]
+        ```
+
+    * Operations on lists - remove
+        * Delete element at a **specific index** with `del(L[index])`
+        * Remove element at **end of list** with `L.pop()`, returns the removed element
+        * Remove a **specific element** with `L.remove(element)`
+            * Looks for the element and removes it
+            * If element occurs multiple times, removes first occurrence
+            * If element not in list, gives an error
+        ```Python
+        L = [2, 1, 3, 6, 3, 7, 0]
+        L.remove(2)
+        # Mutates L = [1,3,6,3,7,0]
+        L.remove(3)
+        # Mutates L = [1,6,3,7,0]
+        del(L[1])
+        # Mutates L = [1,3,7,0]
+        L.pop()
+        # Returns 0 and mutates L = [1,3,7]
+        ```
+
+    * Convert lists to strings and back
+        * Convert **string to list** with `list(s)`, returns a list with every character from `s` an element in `L`
+        * Can use `s.split()`, to **split a string on a character** parameter, splits on spaces if called without a parameter
+        * Use `''.join(L)` to turn a **list of characters into a string**, can give a character in quotes to add char between every element
+        ```Python
+        s = "I<3 cs"
+        # s is a string
+        list(s)
+        # returns ['I', '<', '3', ' ', 'c', 's']
+        s.split('<')
+        # returns ['I', '3 cs']
+        L = ['a', 'b', c']
+        ''.join(L)
+        # 'abc'
+        '_'.join(L)
+        # 'a_b_c'
+        ```
+    * Other list operations
+        * `sort()` and `sorted()`
+        * `reverse()`
+        * and many more (check docs!)
+        ```Python
+        L = [9,6,0,3]
+        sorted(L)
+        # Returns sorted list, L not mutated
+        L.sort()
+        # Mutates L = [0, 3, 6, 9]
+        L.reverse()
+        # Mutates L = [9,6,3,0]
+        ```
+
+    * Mutation, aliasing, cloning
+    * Lists in memory
+        * Lists are **mutable**
+        * Behave differently than immutable types
+        * Is an object in memory
+        * Variable name points to object
+        * Any variable points to object
+        * Any variable pointing to that object is affected
+        * Key phrase to keep in mind when working with lists is **side effects**
+
+    * An analogy
+        * Attributes of a person
+            * Singer, rice
+        * He is known by many names
+        * All nicknames point to the **same person**
+            * Add new attribute to **one nickname**
+            * ... **all his nicknames** refer to old attributes AND all new ones
+    * Aliases
+        * `hot` is an **alias** for `warm` - changing one changes the other!
+        * `append()` has a side effect
+
+    * Cloning a list
+        * Create a new list and **copy every element** using `chill = cool[:]`
+
+    * Sorting lists
+        * Calling `sort()` **mutates** the list, returns nothing
+        * Calling `sorted()` **does not mutate** lsit, must assign result to a variable
+
+    * Lists of lists of lists of....
+        * Can have **nested** lists
+        * Side effects still possible after mutation
+
+    * Mutation and iteration
+        * **Avoid** mutating a list as you are iterating over it
+        * `L1` is `[2,3,4]` not `[3,4]` Why?
+            * Python uses an internal counter to keep track of index it is in the loop
+            * Mutating changes the list length but Python doesn't update the counter
+            * Loop never sees element 2
+            * Seems like, generally, clone first then iterate and modify one
+
+        

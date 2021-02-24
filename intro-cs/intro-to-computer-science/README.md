@@ -972,4 +972,316 @@ print(guess, 'is close to the cube root of', cube)
             * Loop never sees element 2
             * Seems like, generally, clone first then iterate and modify one
 
+# L6: Recursion, dictionaries
+    * Last time
+        * Tuples - immutable
+        * Lists - mutable
+        * Aliasing, cloning
+        * Mutability side effects
+
+    * Recursion
+        * Recursion is the process of repeating items in a self-similar way - Wikipedia
+        * "Mise en abyme" or "Droste effect"
+            * Picture in picture effect 
+
+    * What is recursion?
+        * Algorithmically: a way to design solutions to problems by **divide-and-conquer** or **decrease-and-conquer**
+            * Reduce a problem to simpler versions of the same problem
+        * Semantically: a programming technique where a **function calls itself**
+            * In programming, goal is to NOT have infinite cursion
+                * Must have **1 or more base cases** that are easy to solve
+                * Must solve the same problem on **some other input** with the goal of simplifying the larger problem input
+
+    * Iterative algorithms so far
+        * Looping constructs (`while` and `for` loops) lead to **iterative** algorithms
+        * Can capture computation in a set of **state variables** that update on each iteration through loop
+
+    * Multiplication - Iterative Solution
+        * "Multiply `a * b`" is equivalent to "add `a` to itself `b` times"
+            * `a + a + a + a ... + a`
+        * Capture **state** by
+            * An **iteration** number (`i`) starts at b
+                * `i` <- `i-1` and stop when 0
+
+            * A current **value of computation** (`result`)
+                * `result` <- `result + a`
+
+    ```Python
+    def mult_iter(a, b):
+        result = 0
+        while b > 0: 
+            result += a
+            b -= 1
+        return result
+    ```
+
+    * Multiplication - recursive solution
+        * **Recursive step**
+            * Think how to reduce a problem to a **simpler/smaller version** of same problem
+
+        * **Base case**
+            * Keep reducing problem until reach a simple case that can be **solved directly**
+            * when b = 1, a*b = a
+
+    ```Python
+    def mult(a, b):
+        if b == 1:
+            return a
+        else:
+            return a + mult(a, b-1)
+    ```
+    * Factorial
+        * `n! = n*(n-1) * (n-2) * (n-3) * ... * 1`
+        * For what `n` do we know the factorial?
+            * When n = 1 
+            ```Python
+            if n == 1:
+                return 1
+            ```
+
+        * How to reduce problem? Rewrite in terms of something simpler to reach base case
+
+    * Recursive function scope example
+    ```Python
+    def fact(n):
+        if n == 1:
+            return 1
+        else:
+            return n*fact(n-1)
+
+    print(fact(4))
+    ```
+    * Iteration vs Recursion
+    ```Python
+    def factorial_iter(n):
+        prod = 1
+        for i in range(1, n+1):
+            prod += i
+        return prod
+
+    def factorial(n):
+        if n == 1:
+            return 1
+        else:
+            return n*factorial(n-1)
+    ```
+
+        * Recursion may be simpler, more intuitive
+        * Recursion may be efficient from programmer POV
+        * Recursion may not be efficient from computer POV
+
+    * Inductive reasoning
+        * How do we know that our recursive code will work?
+        * `mult_iter` terminates because b is initially positive and decreases by 1 each time around loop; thus must eventually become less than 1
+        * In the case of `mult(a, b)`
+
+    * Example of induction
+        * 0 + 1 + 2 + 3 + ... + n = (n(n+1))/2
+        * Proof:
+            * If n = 0, then LHS is 0 and RHS is 0*1/2 = 0, so true
+        * Assume true for some k, then need to show that
+            * 0 + 1 + 2 + ... + k + (k + 1) = ((k+1)(k+2))/2
+            * LHS is k(k+1)/2 + (k+1) by assumption that property holds for problem of size k
+            * This becomes, by algebra, ((k+1)(k+2))/2
+    * Relevance to code?
+        * Same logic applies
+        ```Python
+        def mult(a, b):
+            if b == 1:
+                return a
+            else:
+                return a + mult(a, b-1)
+        ```
+
+        * Base case, we can show that `mult` must return correct answer
+        * For recursive case, we can assume that `mult` correctly returns an answer for problems of size smaller than, then by the addition step, it must also return a correct answer for problem of size b
+
+    * Towers of Hanoi
+        ```Python
+        def printMove(fr, to):
+            print('move from ' + str(fr) + ' to ' + str(to))
+
+        def Towers(n, fr, to, spare):
+            if n == 1:
+                printMove(fr, to)
+            else:
+                Towers(n-1, fr, spare, to)
+                Towers(1, fr, to, spare)
+                Towers(n-1, spare, to, fr)
+        ```
+
+    * Recursion with multiple base cases
+        * Fibonacci numbers
+            * Leonardo of Pisa (aka Fibonacci) modeled the following challenge
+                * Newborn pair of rabbits (one female, one male) are put in a pen
+                * Rabbits mate at age of one month
+                * Rabbits have a one month gestation period
+                * Assume rabbits never die, that female always produces one new pair (one male, one female) every month from its second month on.
+                * How many female rabbits are there at the end of one year?
+
+    * Fibonacci
+        * After one month (call it 0) - 1 female
+        * After second month - still 1 female (now pregnant)
+        * After third month - two females, one pregnant, one not
+        * In general, females(n) = females(n-1) + females(n-2)
+            * Every female alive at month n-2 will produce one female in month n;
+            * These can be added those alive in month n-1 to get total alive in month n
+    
+    ```Python
+    def fib(x):
+        """assumes x an int >= 0
+           returns Fibonacci of x"""
+        if x == 0 or x == 1:
+            return 1
+        else:
+            return fib(x-1) + fib(x-2)
+    ```
+    * Recursion on non-numerics
+        * How to check if a string of characters is a palindrome, i.e., reads the same forwards and backwards
+            * "Able was I, ere I saw Elba" - attributed to Napoleon
+            * "Are we not drawn onward, we few drawn onward to new era?" - attributed to Anne Michaels
+
+    * Solving recursively?
+        * First convert the string to just characters, by stripping out punctuation, and converting uppercase to lower case
+        * Then
+            * Base case: a string of length 0 or 1 is a palindrome
+            * Recursive case:
+                * If first character matches last character, then is a palindrome if middle section is a palindrome
+
+    * Example
+        * 'Able was I, ere I saw Elba' -> 'ablewasiereisawelba'
+        * `isPalindrome('ablewasiereisawelba')` is same as
+            * `'a' == 'a'` and `isPalindrome('blewasiereisawelb')`
+    ```Python
+    def isPalindrome(s):
         
+        def toChars(s):
+            s = s.lower()
+            ans = ''
+            for c in s:
+                if c in 'abcdefghijklmnopqrstuvwxyz':
+                    ans = ans + c
+            return ans
+
+        def isPal(s):
+            if len(s) <= 1:
+                return True
+            else:
+                return s[0] == s[-1] and isPal(s[1:-1])
+
+        return isPal(toChars(s))
+    ```
+
+    * How to store student info
+        * So far, can store using separate lists for every info
+        ```
+        names = ['Ana', 'John', 'Denise', 'Katy']
+        grade = ['B', 'A+', 'A', 'A']
+        course = [2.00, 6.0001, 20.002, 9.01]
+        ```
+        * A **separate list** for each item
+        * Each list must have the **same length**
+        * Info stored across lists at **same index**, each index refers to info for a different person
+
+    * A better and cleaner way - a dictionary
+        * Nice to **index item of interest directly** (not always int)
+        * Nice to use **one data structure**, no separate lists
+
+    * A Python dictionary
+        * Store pairs of data
+            * key
+            * value
+    ```Python
+    my_dict = {}
+    grades = {'Ana':'B', 'John':'A+', 'Denise':'A', 'Katy':'A'}
+    ```
+
+    * Dictionary lookup
+        * Similar to indexing into a list
+        * **Looks up** the **key**
+        * **Returns** the **value** associated with the key
+        * If key isn't found, get an error
+    
+    * Dictionary operations
+        * **Add** an entry
+        `grades['Sylvan'] = 'A'`
+        * **Test** if key in dictionary
+        `'John' in grades # returns True`
+        * **Delete** entry
+        `del(grades['Ana'])`
+        * Get an **iterable that acts like a tuple of all keys**
+        `grades.keys()`
+        * Get an **iterable that acts liek a tuple of all values**
+    * `list` vs `dict`
+        * List
+            * **Ordered** sequence of elements
+            * Look up elements by an integer index
+            * Indices have an **order**
+            * Index is an **integer**
+        * Dict
+            * **Matches** "keys" to "values"
+            * Look up one item by another item
+            * **No order** is guaranteed
+            * Key can be any **immutable** type
+
+    * Creating a dictionary
+    ```Python
+    def lyrics_to_frequencies(lyrics):
+        myDict = {}
+        for word in lyrics:
+            if word in myDict:
+                myDict[word] += 1
+            else:
+                myDict[word] = 1
+        return myDict
+    ```
+
+    * Using the dictionary
+    ```Python
+    def most_common_words(freqs):
+        values = freqs.values()
+        best = max(values)
+        words = []
+        for k in freqs:
+            if freqs[k] == best:
+                words.append(k)
+        return (words, best)
+    ```
+
+    * Leveraging dictionary properties
+    ```Python
+    def words_often(freqs, minTimes):
+        result = []
+        done = False
+        while not done:
+            temp = most_common_words(freqs)
+            if temp[1] >= minTimes:
+                result.append(temp)
+                for w in temp[0]:
+                    del(freqs[w])
+            else:
+                done = True
+        return result
+
+    print(words_often(beatles, 5))
+    ```
+
+    * Fibonacci with a dictionary
+        * Do **lookup first** in case already calculated the value
+        * **Modify dictionary as progress through function calls
+
+        ```Python
+        def fib_efficient(n, d):
+            if n in d:
+                return d[n]
+            else:
+                ans = fib_efficient(n-1, d) + fib_efficient(n-2, d)
+                d[n] = ans
+                return ans
+
+        d = {1:1, 2:2}
+        print(fib_efficient(6, d))
+        ```
+        * Known as memoization
+
+    

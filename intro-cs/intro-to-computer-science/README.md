@@ -1284,4 +1284,288 @@ print(guess, 'is close to the cube root of', cube)
         ```
         * Known as memoization
 
+# L7: Testing, debugging, exceptions and assertions 
+    * We aim for high quality - An analogy with soup
+        * You are making soup but bugs keep falling in from the ceiling. What do you do?
+
+    * Programming so far...
+        * Expectations are different from reality
+
+    * Defensive programming
+        * Write **specifications** for functions
+        * **Modularize** programs
+        * Check **conditions** on inputs/outputs (assertions)
+
+    * Testing/Validation
+        * **Compare** input/output pairs to specification
+        * "It's not working!"
+        * "How can I break my program?"
+
+    * Debugging
+        * **Study events** leading up to an error
+        * "Why is it not working?"
+        * "How can I fix my program?"
+
+    * Classes of tests
+        * Unit testing
+            * Validate each piece of program
+            * **Testing each function** sepearately
+        * Regression testing
+            * Add test for bugs as you find them
+            * **Catch reintroduced** errors that were previously fixed
+        * Integration testing
+            * Does **overall program** work?
+            * Tend to rush to do this 
+
+    * Testing approaches
+        * **Intuition** about natural boundaries to the problem
+        ```Python
+        def is_bigger(x, y):
+            """ Assumes x and y are ints
+            Returns True is y is less than x, else False """
+        ```
+            * Can you come up with some natural partitions?
+        * If no natural partitions, might do **random testing**
+            * Probability that code is correct increases with more tests
+            * Better options below
+        * **Black box testing**
+            * Explore paths through specification
+        * **Glass box testing**
+            * Explore paths through code
+
+    * Black box testing
+    ```Python
+    def sqrt(x, eps):
+        """ Assumes x, eps floats, x >= 0, eps > 0
+        Returns res such that x-eps <= res*res <= x+epx"""
+    ```
+
+        * Designed **without looking** at the code
+        * Can be done by someone other than the implementer to avoid some implementer **biases**
+        * Testing can be **reused** if implementation changes
+        * **Paths** through specification
+            * Build test cases in different natural space partitions
+            * Also consider boundary conditions (empty lists, singleton list, large numbers, small numbers)
+
+    * Glass box testing
+        * **Use code** directly to guide design of test cases
+        * Called **path-complete** if every potential path through code is tested at least once
+        * What are some **drawbacks** of this type of testing?
+            * Can go through loops arbitrarily many times
+            * Missing paths
+        * Guidelines
+            * Branches
+            * For loops
+            * While loops
+
+        ```Python
+        def abs(x):
+            """ Assumes x is an int
+            Returns x if x>=0 and -x otherwise"""
+            if x < -1:
+                return -x
+            else:
+                return x
+        ```
+        * A path-complete test suite could **miss a bug**
+        * Path-complete test suite: 2 and -2
+        * but abs(-1) incorrectly returns -1
+        * Should still test boundary cases
+
+    * September 9, 1947
+        * Mark II Aiken Relay Computer
+        * First actual case of bug found
+    * Debugging steps
+        * **Study** program code
+            * Don't ask what is wrong
+            * Ask how did I get the unexpected result
+            * Is it part of a family?
+        * **Scientific method**
+            * Study available data
+            * Form hypothesis
+            * Repeatable experiments
+            * Pick simplest input to test with
+
+    * Error messages - easy
+        * Trying to access beyond the limits of a list
+        * Trying to convert an inappropriate type
+        * Referencing non-existent variable
+        * Mixing data types without appropriate coercion
+        * Forgetting to close parenthesis, quotation, etc.
+
+    * Logic errors - hard
+        * **Think** before writing new code
+        * **Draw** pictures, take a break
+        * **Explain** the code to
+            * Someone else
+            * Rubber ducky
+
+    * Do's and Don't's
+        * Don't
+            * Write entire program
+            * Test entire program
+            * Debug entire program
+            * Change code
+            * Remember where bug was or what change you made
+            * Panic
+        * Do
+            * Write a function
+            * Test the function, debug the function
+            * Write a function
+            * Test the function, debug the function
+            * *** Do integration testing ***
+            * Backup code
+            * Change code
+            * Write down potential bug in a comment
+            * Test code
+            * Compare new version with old version
+        
+    * Other types of exceptions
+        * Already seen common error types:
+            * `SyntaxError`: Python can't parse program
+            * `NameError`: Local or global name not found
+            * `AttributeError`: Attribute reference fails
+            * `TypeError`: Operand doesn't have correct type
+            * `ValueError`: Operand type okay, but value is illegal
+            * `IOError`: IO system reports malfunction (e.g. file not found)
+
+    * Dealing with exceptions
+        * Python code can provide **handlers** for exceptions
+        ```Python
+        try:
+            a = int(input("Tell me one number:"))
+            b = int(input("Tell me another number:"))
+            print(a/b)
+        except:
+            print("Bug in user input.")
+        ```
+
+        * Exceptions **raised** by any statement in body of **`try`** are **handled** by the **`except`** statement and execution continues with the body of the `except` statement
+    * Handling specific exceptions
+        * Have **seperate `except` clauses** to deal with a particular type of exception
     
+    * Other exceptions
+        * `else`:
+            * Body of this is executed when execution of associated `try` body **completes with no exceptions**
+        * `finally`:
+            * Body of this is **always executed** after `try`, `else` and `except` clauses, even if they raised another error or executed a `break`, `continue` or `return`
+            * Useful for clean-up code that should be run no matter what else happened (e.g. close a file)
+
+    * What to do with exceptions?
+        * What to do when encounter an error?
+        * **Fail silently**
+            * Substitute default values or just continue
+            * Bad idea! User gets no warning
+        * Return an **"error" value**
+            * What value to choose
+            * Complicates code having to check for a special value
+        * Stop execution, **signal error** condition
+            * In Python, **raise an exception**
+            `raise Exception("descriptive string")`
+
+    * Example: Raising an exception
+    ```Python
+    def get_ratios(L1, L2):
+        """ Assumes: L1 and L2 are lists of equal length of numbers
+            Returns: a list containing L1[i]/L2[i]"""
+        ratios = []
+        for index in range(len(L1)):
+            try:
+                ratios.append(L1[index]/L2[index])
+            except ZeroDivisionError:
+                ratios.append(float('nan'))
+            except:
+                raise ValueError('get_ratios called with bad arg')
+
+        return ratios
+    ```
+    
+    * Example of exceptions
+        * Assume we are **given a class list** for a subject: each entry is a list of two parts
+            * A list of first and last name for a student
+            * A list of grades on assignments
+        * Create a **new class list**, with name, grades and an average
+
+    * Example code
+    ```Python
+    class_list = [[['peter', 'parker'], [80.0, 70.0, 85.0]], [['bruce', 'wayne'], [100.0, 80.0, 74.0]]]
+
+    def get_stats(class_list):
+        new_stats = []
+        for elt in class_list:
+            new_stats.append(elt[0], elt[1], avg(elt[1]))
+        return new_stats
+
+    def avg(grades):
+        return sum(grades)/len(grades)
+    ```
+
+    * Error if no grade for a student
+        * If one or more students **don't have any grades**, get an error
+        * Get `ZeroDivisionError: float division by zero` because try to `return sum(grades)/len(grades)`
+
+    * Option 1: Flag the error by printing a message
+        * Decide to **notify** that something went wrong with a msg
+        ```Python
+        def avg(grades):
+            try:
+                return sum(grades)/len(grades)
+            except ZeroDivisionError:
+                print('warning: no grades data')
+        ```
+        * Running on some test data gives
+        ```Python
+        >>> warning: no grades data
+        >>> [[['bruce', 'wayne'], [10.0, 8.0, 74], 13.83333334]],   ...
+        >>> , [['deadpool'], [], None]
+        ```
+
+    * Option 2: Change the policy
+        * Decide that a student with no grades gets a **zero**
+        ```Python
+        def avg(grades):
+            try:
+                return sum(grades)/len(grades)
+            except ZeroDivisionError:
+                print('wrning: no grades data')
+                return 0.0
+        ```
+        * Running on some test data gives
+        ```Python
+        >>> warning: no grades data
+        >>> [[['peter', 'parker'], [10.0, 5.0, 85.0], 15.41666666]], ...
+        >>> , ['deadpool'], [], 0.0]
+        ```
+
+    * Assertations
+        * Want to be sure that **assumptions** on state of computation are as expected
+        * Use an **`assert` statement** to raise an `AssertationError` exception if assumptions not met
+        * An example of good **defensive programming**
+
+    * Example
+    ```Python
+    def avg(grades):
+        assert not len(grades) == 0, 'no grades data'
+        return sum(grades)/len(grades)
+    ```
+        * Raises an `AssertationError` if it is given an empty list for grades
+        * Otherwise runs ok
+
+    * Assertations as defensive programming
+        * Assertations don't allow a programmer to control response to unexpected conditions
+        * Ensure that **execution halts** whenever an expected condition is not met
+        * Typically used to **check inputs** to functions, but can be used anywhere
+        * Can be used to **check outputs** of a function to avoid propagating bad values
+        * Can make it easier to locate a source of a bug
+
+    * Where to use assertations?
+        * Goal is to spot bugs as soon as introduced and make clear where they happened
+        * Use as a **supplement** to testing
+        * Raise **exceptions** if users supplies **bad data input**
+        * Use **assertations** to
+            * Check **types** of arguments or values
+            * Check that **invariants** on data structures are met
+            * Check **constraints** on return values
+            * Check for **violations** of constraints on procedure (e.g. no duplicates in a list)
+
+

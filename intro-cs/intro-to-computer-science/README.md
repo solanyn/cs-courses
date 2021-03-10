@@ -1568,4 +1568,136 @@ print(guess, 'is close to the cube root of', cube)
             * Check **constraints** on return values
             * Check for **violations** of constraints on procedure (e.g. no duplicates in a list)
 
+# L8: Object Oriented Programming
+    * Objects
+        * Python supports many different kinds of data
+            * `1234`
+            * `3.14159`
+            * `"Hello"`
+            * `[1, 5, 7, 11, 13]`
+            * `{"CA": "California", "MA": "Massachusetts"}`
+        * Each is an **object**, and every object has:
+            * a **type**
+            * an internal **data representation** (primitive or composite)
+            * a set of procedures for **interaction** with the object
+        * An object is an **instance** of a type
+            * `1234` is an instance of an `int`
+            * `"hello"` is an instance of a string
 
+    * Object oriented programming (OOP)
+        * **EVERYTHING IN PYTHON IS AN OBJECT** (and has a type)
+        * Can **create new objects** of some type
+        * Can **manipulate objects**
+        * Can **destroy objects**
+            * Explicitly using `del` or just "forget" about them
+            * Python system will reclaim destroyed or inaccessible objects - called "garbage collection"
+
+    * What are objects?
+        * Objects are **a data abstraction** that captures...
+        
+        1. An **internal representation**
+            * Through data attributes
+        2. An **interface** for interacting with object
+            * Through methods (aka procedures/functions)
+            * Defines behaviours but hides implementation
+
+    * Example: [1,2,3,4] has type list
+        * How are lists **represented internally**? Linked list of cells
+        * How to **manipulate** lists?
+            * `L[i], L[i:j], +`
+            * `len(), min(), max(), del(L[i])`
+            * `L.append(), L.extend(), L.count(), L.index(), L.insert(), L.pop(), L.remove(), L.reverse(), L.sort()`
+        * Internal representation should be private
+        * Correct behaviour may be compromised if you manipulate internal representation directly
+
+    * Creating and using your own types with classes
+        * Make a distinction between **creating a class** and **using an instance** of the class
+        * **Creating** the class involves
+            * Defining the class name
+            * Defining class attributes
+            * For example, someone wrote code to implement a list class
+
+        * **Using** the class involves
+            * Creating new **instances** of objects
+            * Doing operations on the instances
+            * For example, `L=[1,2]` and `len(L)`
+
+    * Define your own types
+        * Use the `class` keyword to define a new type
+
+        ```Python
+        class Coordinate(object):
+            #define attributes here
+        ```
+
+        * Similar to `def`, indent code to indicate which statements are part of the **class definition**
+        * The word `object` means that `Coordinate` is a Python object and **inherits** all its attributes (inheritance next lecture)
+            * `Coordinate` is a subclass of `object`
+            * `object` is a superclass of `Coordinate`
+
+    * What are attributes?
+        * Data and procedures that "**belong**" to the class
+        * **Data attributes**
+            * Think of data as other objects that make up the class
+            * For example, a coordinate is made up of two numbers
+        * **Methods** (procedural attributes)
+            * Think of methods as functions that only work with this class
+            * How to interact with the object
+            * For example you can define a distance between two coordinate objects but there is no meaning to a distance between two list objects
+
+    * Defining how to create an instance of a class
+        * First we have to define **how to create an instance** of object
+        * Use a **special method called `__init__`** to initialise some data attributes
+
+    ```Python
+    class Coordinate(object):
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+    ```
+
+    * Actually creating an instance of a class
+    ```Python
+    c = Coordinate(3, 4)
+    origin = Coordinate(0, 0)
+    print(c.x)
+    print(origin.x)
+    ```
+        * Data attributes of an instance are called **instance variables**
+        * Don't provide argument for `self`, Python does this automatically
+
+    * Define a method for the `Coordinate` class
+    ```Python
+    class Coordinate(object):
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+        def distance(self, other):
+            x_diff_sq = (self.x - other.x)**2
+            y_diff_sq = (self.y - other.y)**2
+            return (x_diff_sq + y_diff_sq)**0.5
+    ```
+        * Other than `self` and dot notation, methods behave just like other functions (take params, do operations, return)
+
+    * How to use a method
+    ```Python
+    def distance(self, other):
+        # code here
+    ```
+        * Using the class:
+            * Conventional way
+            ```Python
+            c = Coordinate(3,4)
+            zero = Coordinate(0,0)
+            print(c.distance(zero))
+            ```
+
+            * Equivalent to
+            ```Python
+            c = Coordinate(3,4)
+            zero = Coordinate(0,0)
+            print(Coordinate.distance(c,zero))
+            ```
+
+    * 

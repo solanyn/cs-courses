@@ -1700,4 +1700,65 @@ print(guess, 'is close to the cube root of', cube)
             print(Coordinate.distance(c,zero))
             ```
 
-    * 
+    * Print representation of an object
+    ```Python
+    >>> c = Coordinate(3,4)
+    >>> print(c)
+    <__main__.Coordinate object at 0x7fa918510488>
+    ```
+        * **Uninformative print representaion by default
+        * Define a **__str__ method** for a class
+        * Python calls the `__str__` method when used with `print` on your class object
+        * You choose what it does! Say that when we print a `Coordinate` object, want to show
+        ```Python
+        >>> print(c)
+        <3,4>
+        ```
+
+    * Defining your own print method
+    ```Python
+    class Coordinate(object):
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+        ...
+        def __str__(self):
+            return "<"+str(self.x)+","+str(self.y)+">"
+    ```
+
+    * Wrapping your head around types and classes
+        * Can ask for the type of an object instance
+        ```Python
+        >>> c = Coordinate(3,4)
+        >>> print(c)
+        <3,4>
+        >>> print(type(c))
+        <class __main__.Coordinate>
+        ```
+        * This makes sense since
+        ```Python
+        >>> print(Coordinate)
+        <class __main__.Coordinate>
+        >>> print(type(Coordinate))
+        <type 'type'>
+        ```
+        * Use `isinstance()` to check if an object is a `Coordinate`
+        ```Python
+        >>> print(isinstance(c, Coorindate))
+        True
+        ```
+
+    * Special operators
+        * +, -, ==, <, >, len(), print and many others
+        * Like `print`, can override these to work with your class
+        * Define them with double underscores before/after
+        ```Python
+        __add__(self, other) # -> self + other
+        __sub__(self, other) # -> self - other
+        __eq__(self, other) # -> self == other
+        __lt__(self, other) # -> self < other
+        __len__(self) # -> len(self)
+        __str__(self) # -> print(self)
+        ```
+
+# L9: Python Classes and Inheritance

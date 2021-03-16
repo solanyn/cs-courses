@@ -1762,3 +1762,145 @@ print(guess, 'is close to the cube root of', cube)
         ```
 
 # L9: Python Classes and Inheritance
+    * Implementing the class vs. Using the class
+        * Write code from two different perspectives
+        * **Implementing** a new object type with class
+            * **Define** the class
+            * Define **data attributes** (WHAT IS the object)
+            * Definte **methods** (HOW TO use the object)
+        * **Using** the new object type in code
+            * Create **instances** of the object type
+            * Do **operations** with them
+
+    * Class definition of an object type vs. Instance of a class
+        * Class name is the **type**, `class Coordinate(object)`
+        * Class if defined generically
+            * Use `self` to refer to some instance while defining the class, `(self.x - self.y)**2`
+            * `self` is a parameter to methods in class definition
+        * Class defines data and methods **common across all instances**
+        * Instance is **one specific** object, `coord = Coordinate(1,2)`
+        * Data attribute values vary between instances, `c1 = Coordinate(1,2), c2 = Coordinate(3,4)`
+            * `c1` and `c2` have different data attribute values `c1.x` and `c2.x` because they are different objects
+        * Instance has the **structure of the class**
+
+    * Why use OOP and classes of objects?
+        * Mimic real life
+        * Group different objects part of the same type
+
+    * How to define a class (recap)
+    ```Python
+    class Animal(object):
+        def __init__(self, age):
+            self.age = age
+            self.name = None
+    ```
+    * Getter and Setter methods
+    ```Python
+    class Animal(object):
+        def __init__(self, age):
+            self.age = age
+            self.name = None
+        def get_age(self):
+            return self.age
+        def get_name(self):
+            return self.name
+        def set_age(self, newage):
+            self.age = newage
+        def set_name(self, newname=""):
+            self.name = newname
+        def __str__(self):
+            return "animal:" + str(self.name) + ":" + str(self.age)
+    ```
+        * **Getters and setters** should be used outside of class to access data attributes
+
+    * An instance and dot notation (recap)
+        * Instantiation creates an **instance of an object**
+        `a = Animal(3)`
+        * **Dot notation** used to access attributes (data and methods) though it is better to use getters and setters to access data attributes
+        ```Python
+        a.age
+        a.get_age()
+        ```
+
+    * Information hiding
+        * Author of class definition may **change data attribute** variable names
+        ```Python
+        class Animal(object):
+            def __init__(self, age):
+                self.years = age
+            def get_age(self):
+                return self.years
+        ```
+
+        * If you are **accessing data attributes** outside the class and class **definition changes**, may get errors
+        * Outside of class, use getters and setters instead instead use `a.get_age()` NOT `a.age`
+            * Good style
+            * Easy to maintain code
+            * Prevents bugs
+
+    * Python not great at information hiding
+        * Allows you to **access data** from outside class definition `print(a.age)`
+        * Allows you to **write to data** from outside class definition `a.age = 'infinite'`
+        * Allows you to **create data attributes** for an instance from outside class definition `a.size = "tiny"`
+        * It's **not good style** to do any of these!
+
+    * Default arguments
+        * **Default arguments** for formal parameters are used if no actual argument is given
+        `def set_name(self, newname=""): ...`
+        * Default argument used here
+        ```Python
+        a = Animal(3)
+        a.set_name()
+        print(a.get_name()
+        ```
+        * Argument passed in is used here
+        ```Python
+        a = Animal(3)
+        a.set_name("fluffy")
+        print(a.get_name())
+        ```
+
+    * Hierarchies
+        * Everything is an animal
+        * Person, cat and rabbit are all animals with common attributes but with more specialised attributes
+        * Student is type of person
+
+    * Hierarchies
+        * **Parent class** (super class)
+        * **Child class** (subclass)
+            * **Inherits** all data and behaviours of parent class
+            * **Add** more **info**
+            * **Add** more **behaviour**
+            * **Override** behaviour
+
+    * Inheritance: Parent class
+    ```Python
+    class Animal(object):
+        def __init__(self, age):
+            self.age = age
+            self.name = None
+        def get_age(self):
+            return self.age
+        def get_name(self):
+            return self.name
+        def set_age(self, newage):
+            self.age = newage
+        def set_name(self, newname=""):
+            self.name = newname
+        def __str__(self):
+            return "animal:" + str(self.name) + ":" + str(self.age)
+    ```       
+    * Inheritance: Subclass
+    ```Python
+    class Cat(Animal):
+        def speak(self):
+            print("meow")
+        def __str__(self):
+            return "cat:"+str(self.name)+":"+str(self.age)
+    ```
+        * Add new functionality with `speak()`
+            * Instance of type `Cat` can be called with new methods
+            * Instance of type `Animal` throws error if called with `Cat`'s new method
+        * `__init__` is not missing, uses the `Animal` version
+
+

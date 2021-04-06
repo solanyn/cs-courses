@@ -1903,4 +1903,114 @@ print(guess, 'is close to the cube root of', cube)
             * Instance of type `Animal` throws error if called with `Cat`'s new method
         * `__init__` is not missing, uses the `Animal` version
 
+    * Class variables and the `Rabbit` subclass
+        * **Class variables** and their values are shared between all instances of a class
+
+    ```Python
+    class Rabbit(Animal):
+        tag = 1
+        def __init__(self, age, parent1=None, parent2=None):
+            Animal.__init__(self, age)
+            self.parent1 = parent1
+            self.parent2 = parent2
+            self.rid = Rabbit.tag
+            Rabbit.tag += 1
+    ```
+        * `tag` used to give **unique id** to each new rabbit instance
+
+    * Special method to compare two `Rabbits`
+        * Decide that two rabbits are equal if they have the **same two parents**
+    ```Python
+    def __eq__(self, other):
+        parents_same = self.parent1.rid == other.parent1.rid \
+                       and self.parent2.rid == other.parent2.rid
+
+        parents_opposite = self.parent2.rid == other.parent1.rid
+                           and self.parent1.rid == other.parent2.rid
+        return parents_same or parents_opposite
+    ```
+        * Compare ids of parents since **ids are unique** (due to class var)
+        * Note you can't compare objects directly
+            * For example with `self.parent1 == other.parent1`
+            * This calls the `__eq__` method over and over until call it on `None` and gives an `AttributeError` when it tries to do `None.parent1`
+
+# L10: Understanding Program Efficiency, Part 1
+    * Want to understand efficiency of programs
+        * How can we reason about an algorithm in order to predict the amount of time it will need to solve a problem of a particular size?
+        * How can we relate choices in algorithm design to the time efficiency of the resulting algorithm?
+            * Are there fundamental limits on the amount of time we will need to solve a particular problem?
+
+        * Computers are fast and getting faster - so maybe efficient programs don't matter?
+            * But data sets can be very large (e.g. in 2014, Google served 30,000,000,000,000 pages, covering 100,000,000 GB - how long to search brute force?)
+            * Thus, simple solutions may simply not scale with size in acceptable manner
+        * How can we decide which option for program is most efficient?
+
+    * How to evaluate the efficiency of programs
+        * Measure with a **timer**
+        * **Count** the operations
+        * Abstract notion **order of growth**
+            * Will argue that this is the most appropriate way of assessing the impact of choices of algorithm in solving a problem; and in measuring the inherent difficulty in solving problem
+
+    * Timing a program
+        * Use time module
+        * Recall that importing means to bring in that class into your own file
+
+    ```Python
+    import time
+
+    def c_to_f(c):
+        return c*9/5 + 32
+
+    t0 = time.clock() # start clock
+    c_to_f(100000) # call function
+    t1 = time.clock() - t0 # stop clock
+    print("t =", t, ":", t1,"s,")
+    ```
+
+    * Timing programs is inconsistent
+        * GOAL: to evaluate different algorithms
+        * Running time **varies between algorithms** 
+        * Running time **varies between implementations** 
+        * Running time **varies between computers**
+        * Running time is **not predictable** based on small inputs
+
+        * Time varies for different inputs but cannot really express a relationship between inputs and time
+
+    * Counting operations
+        * Assume these steps take **constant time**:
+            * Mathematical operations
+            * Comparisons
+            * Assignments
+            * Accessing objects in memory
+
+        * Then count the number of operations executed as function of size of input
+
+    * Counting operations is better, but still...
+        * GOAL: to evaluate different algorithms
+        * Count **depends on algorithm**
+        * Count **depends on implementations**
+        * Count **independent of computers**
+        * No clear definition of **which operations** to count
+
+        * Count varies for different inputs and can come up with a relationsip between inputs and the count
+
+    * Different inputs change how the program runs
+        * A fucnction that searches for an element in a list
+        ```Python
+        def search_for_elmt(L, e):
+            for i in L:
+                if i == e:
+                    return True
+            return False
+        ```
+    * Best, average, worst cases
+        * Suppose you are given a list `L` of some length `len(L)`
+        * **Best case**: minimum running time over all possible inputs of a given size, `len(L)`
+            * Constant for `search_for_elmt`
+            * First element in any list
+        * **Average case**: average running time over all possible inputs of a given size, `len(L)`
+            * Practical measure
+        * **Worst case**: maximum running time over all possible inputs of given size, `len(L)`
+            * Linear in length of list for `search_for_elmt`
+            * Must search entire list and not find it
 

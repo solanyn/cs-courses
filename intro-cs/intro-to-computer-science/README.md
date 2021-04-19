@@ -2014,3 +2014,144 @@ print(guess, 'is close to the cube root of', cube)
             * Linear in length of list for `search_for_elmt`
             * Must search entire list and not find it
 
+    * Exact steps vs O()
+    ```Python
+    def fact_iter(n):
+        """assumes n an int >= 0"""
+        answer = 1
+        while n > 1:
+            answer *= n
+            n -= 1
+        return answer
+    ```
+        * Computes factorial
+        * Number of steps: **1 + 5n + 1**
+        * Worst case asymptotic complexity: O(n)
+            * Ignore additive constants
+            * Ignore multiplicative constants
+    
+    * Simplification examples
+        * Drop constants and multiplicative factors
+        * Focus on **dominant terms**
+
+    * Types of orders of growth
+        * Constant
+        * Linear
+        * Quadratic
+        * Logarithmic
+        * n log n
+        * Exponential
+
+    * Analysing programs and their complexity
+        * **Combine** complexity classes
+            * Analyse statements inside functions
+            * Apply some rules, focus on dominant term
+        * **Law of Addition** for O():
+            * Used with **sequential** statements
+            * O(f(n)) + O(g(n)) is O(f(n) + g(n))
+            * For example,
+            ```Python
+            for i in range(n):
+                print('a')
+            for j in range(n*n):
+                print('b')
+            ```
+            is O(n) + O(n*n) = O(n+n**2) = O(n**2) because of dominant term
+
+    * Complexity classes
+        * O(1) denotes constant running time
+        * O(log n) denotes logarithmic running time
+        * O(n) denotes linear running time
+        * O(n log n) denotes log linear running time
+        * O(n**c) denotes polynomial running time (c is a constant)
+        * O(C**n) denotes exponential running time (c is a constant being raised to a power based on size of input)
+
+    * Linear search on **unsorted** list
+    ```Python
+    def linear_search(L, e):
+        found = False
+        for i in range(len(L)):
+            if e == L[i]:
+                found = True
+                # return True speeds up a little but speed up doesn't impact worst case case
+        return found
+    ```
+        * Must look through all elements to decide it's not there
+
+    * O(len(L)) for the loop * O(1) to test if e == L[i]
+        * O(1 + 4n + 1) = O(4n + 2) = O(n)
+
+    * Constant time list access
+        * If list is all ints
+            * ith element at
+                * base * 4 + i
+        * If list is heterogeneous
+            * Indirection
+            * References to other objects
+    
+    * Linear search on **sorted** list
+    ```Python
+    def search(L, e):
+        for i in range(len(L)):
+            if L[i] == e:
+                return True
+            if L[i] > e:
+                return False
+        return False
+    ```
+        * Must only look until reach a number greater than e
+        * O(len(L)) for the loop * O(1) to test if e == L[i]
+        * Overall complexity is **O(n) - where n is len(L)**
+        * **NOTE:** order of growth is same, though run time may differ for two search methods
+
+    * Linear complexity
+        * Searching a list in sequence to see if an element is present
+        * Add characters of a string, assumed to be composed of decimal digits
+        ```Python
+        def addDigits(s):
+            val = 0
+            for c in s:
+                val += int(c)
+
+            return val
+        ```
+        * **O(len(s))**
+
+    * Quadratic complexity
+        * Determine if one list is subset of second, i.e., every element of first, appears in second (assume no duplicates)
+        ```Python
+        def isSubset(L1, L2):
+            for e1 in L1:
+                matched = False
+                for e2 in L2:
+                    if e1 == e2:
+                        matched = True
+                        break
+                if not matched:
+                    return False
+            return True
+        ```
+        * Outer loop executed len(1) times
+        * Each iteration will execute inner loop up to len(L2) times, with constant number of operations
+        * O(n**2) worst case where lists are same length
+
+        * Find intersection of two lists, return a list with each element appearing only once
+        ```Python
+            def intersect(L1, L2):
+                tmp = []
+                for e1 in L1:
+                    for e2 in L2:
+                        if e1 == e2:
+                            tmp.append(e1)
+                res = []
+                for e in tmp:
+                    if not(e in res):
+                        res.append(e)
+                return res
+        ```
+
+        * First nested Loop takes len(L1)*len(L2) steps
+        * Second loop takes at most len(L1) steps
+        * Determining if element in list might take len(L1) steps
+
+# L11: Understanding Program Efficiency, Part 2

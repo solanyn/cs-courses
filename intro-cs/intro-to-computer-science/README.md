@@ -2155,3 +2155,150 @@ print(guess, 'is close to the cube root of', cube)
         * Determining if element in list might take len(L1) steps
 
 # L11: Understanding Program Efficiency, Part 2
+    * Constant complexity
+        * Complexity independent of inputs
+        * Very few interesting algorithms in this class, but can often have pieces that fit this class
+        * Can have loops or recursive calls, but ONLY IF number of iterations of calls independent of size of input
+
+    * Bisection search
+        1. Pick an index `i`, that divides list in hald
+        2. Ask if `L[i] == e`
+        3. If not, ask if `L[i]` is larger or smaller than `e`
+        4. Depending on answer, search left or right half `L` for `e`
+
+    * A new version of a divide-and-conquer algorithm
+        * Break into smaller version of problem (smaller list), plus some simple operations
+        * Answer to smaller version is answer to original problem
+        
+    * Bisection search complexity analysis
+        * Finish looking through list when 1=n/2**i
+        * So i = log n
+        * Complexity of recursion is **O(log n) - where n is len(L)
+
+    * Bisection search implementation 1
+    ```Python
+    def bisect_search1(L, e):
+        if L == []:
+            return False
+        elif len(L) == 1:
+            return L[0] == e
+        else:
+            half = len(L)//2
+            if L[half] > e:
+                return bisect_search1(L[:half], e)
+            else:
+                return bisect_search1(L[half:], e)
+
+    ```
+        * Slicing the list returns a copy of the list!!
+
+    * Complexity of first bisection search method
+        * **Implementation 1 - bisect_search1**
+            * O(log n) bisection search calls
+                * On each recursive call, size of range to be searched is cut in half
+                * If original range is of size n, in worst case fown to range of size 1 when n/(2^k) = 1; or when k = log n
+            * O(n) for each bisection search call to copy list
+                * This is the cost to set up each call, so do this for each level of recursion
+            * O(log n) * O(n) -> **O(n log n)**
+            * If we are really careful, note that length of list to be copied is also halved on each recursive call
+                * Turns out that total cost to copy is **O(n)** and this dominates the log n cost due to the recursive calls
+
+    * Bisection search alternative
+        * Still reduce size of problem by factor of two on each step
+        * But just keep track of low and high portion of list to be searched
+        * Avoid copying the list
+        * Complexity of recursion is again **O(log n) - where n is len(L)**
+    
+    * Bisection search implementation 2
+    ```Python 
+    def bisect_search2(L, e):
+        def bisect_search_helper(L, e, low, high):
+            if high == low:
+                return L[low] == e
+            mid = (low + high)//2
+            if L[mid] == e:
+                return True
+            elif L[mid] > e:
+                if low == mid: #nothing left to search
+                    return False
+                else:
+                    return bisect_search_helper(L, e, low, mid - 2)
+        if len(L) == 0:
+            return False:
+        else:
+            return bisect_search_helper(L, e, 0, len(L) - 1)
+    ```
+
+    * Logarithmic complexity
+    ```Python 
+    def intToStr(i):
+        digits = '0123456789'
+        if i == 0:
+            return '0'
+        result = ''
+        while i > 0:
+            result = digits[i % 10] + result
+            i = i//10
+        return result
+    ```
+        * Only have to look at loop as no function calls
+        * Within while loop, constant number of steps
+        * How many times through loop?
+            * How many times can one divide by 10
+            * **O(log(i))
+
+    * O() for iterative factorial
+    ```Python
+    def fact_iter(n):
+        prod = 1
+        for i in range(1, n+1):
+            prod *= i
+        return prod
+    ```
+        * Overall **O(n)** - n times round lopos, constant cost each time
+
+    * O() for recursive factorial
+    ```Python 
+    def fact_recur(n):
+        """ assume n >= 0 """
+        if n <= 1:
+            return 1
+        else:
+            return n*fact_recur(n - 1)
+    ```
+
+        * Computes factorial recursively
+        * If you time it, may notice that it runs a bit slower than iterative version due to function calls
+        * Still **O(n)** because the number of function calls is linear in n, and constant effort to set up call
+
+    * Log-linear complexity
+        * Many practical algorithms are log-linear
+        * Very commonly used log-linear algorihtm is merge sort
+        
+    * Polynomial complexity
+        * Most common polynomial algorithms are quadratic, i.e., complexity grows with square of size of input
+        * Commonly occurs when we have nested loops or recursive function calls
+        * Saw this last time
+
+    * Complexity of Towers of Hanoi
+        * Let t_n denote time to solve tower or size n
+        * t_n = 2t_n-1 + 1
+        *     = 2(2t_n-2 + 1) + 1
+        *     = 4(2t_n-3 + 1) + 2 + 1
+        *     ...
+        *     = 2^k * t_n-k + 2^k-1 + .. 4 + 2 + 1
+        *     = 2^n-1 + 2n-2 + ... + 4 + 2 + 1
+        *     = 2^n - 1
+        * So order of growth is **O(2^n)**
+
+    * Exponential complexity
+        * Given a set of integers (with no repeats), want to generate the collection of all possible subsets - called the power set
+        * {1, 2, 3, 4} would generate
+            * {}, {1}, {2}, {3}, {4}, {1, 2}, ..., {1,2,3,4}
+        * Order doesn't matter
+
+    * Power set - Concept
+        * We want to generate the pwoer set of integers from 1 to n
+        * Assume we can generate power set of integers from 1 to n-1
+        * Then all of those subsets elong to bigger power set (choosing not include n); and all of those subsets with n added to each of them also belong to the bigger power set (choosing to include n)
+

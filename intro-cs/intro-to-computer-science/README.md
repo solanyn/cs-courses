@@ -2302,3 +2302,68 @@ print(guess, 'is close to the cube root of', cube)
         * Assume we can generate power set of integers from 1 to n-1
         * Then all of those subsets elong to bigger power set (choosing not include n); and all of those subsets with n added to each of them also belong to the bigger power set (choosing to include n)
 
+    ```Python
+    def gen Subsets(L):
+        res = []
+        if len(L) == 0:
+            return [[]] # list of empty list
+        smaller = genSubsets(L[:-1]) # All subsets without last element
+        extra = L[-1:] # Create a list of just last element
+        new = []
+        for small in smaller:
+            new.append(small+extra) # For all smaller solutions, add one with last element
+        return smaller+new
+    ```
+        * Assuming append is constant time
+        * Time includes time to solve smaller proble, plus time needed to make a copy of all elements in smaller problem
+        * But important to think about size of smaller
+        * Know that for a set of size k there are 2^k cases
+        * Let t_n denote time to solve problem of size n
+        * Let s_n denote size of solution for problem size n
+        * t_n = t_n-1 + s_n-1 + c (where is some constant number of operations)
+        * t_n = t_n-1 + 2^n-1 + c
+        *     = t_n-2 + 2_n-2 + c + 2^n-1 + c
+        *     = t_n-k + 2^n-k + ... + 2^n-1 + kc
+        * 1 + 2^2 + nc
+        * Thus computing power set is **O(2^n)**
+
+    * Complexity classes
+        * O(1) - code does not depend on size of problem
+        * O(log n) - reduce problem in half each time through process
+        * O(n) - simple iterative or recursive problem
+        * O(n log n) - will see next time
+        * O(n^c) - nested loops or recursive calls
+        * O(c^n) - multiple recursive calls at each level
+
+    * Complexity of iterative Fibonacci
+    ```Python
+    def fib_iter(n):
+        if n == 0:
+            return 0
+        elif n == 1:
+            return 1
+        else:
+            fib_i = 0
+            fib_ii = 1
+            for i in range(n-1):
+                tmp = fib_i
+                fib_i = fib_ii
+                fib_ii = tmp + fib_ii
+            return fib_ii
+    ```
+        * Best case: O(1)
+        * Worst case: O(1) + O(n) + O(1) => **O(n)**
+
+    * Complexity of recursive Fibonacci
+    ```Python
+    def fib_recur(n):   
+        """ assumes n an int >= 0 """
+        if n == 0:
+            return 0
+        elif n == 1:
+            return 1
+        else:
+            return fib_recur(n-1) + fib_recur(n-2)
+    ```
+
+# L12: Searching and Sorting

@@ -2367,3 +2367,129 @@ print(guess, 'is close to the cube root of', cube)
     ```
 
 # L12: Searching and Sorting
+    * Searching algorithms
+        * Linear search
+            * **Brute force search (aka British Museum algorithm)
+            * List does not have to be sorted
+        * Bisection search
+            * List **MUST be sorted** to give correct answer
+            * Saw two different implementations of the algorithm
+
+    * Linear search on **unsorted** list: recap
+    ```Python
+    def linear_search(L, e):
+        found = False
+        for i in range(len(L)):
+            if e == L[i]:
+                found = True
+        return found
+    ```
+        * Must look through all elements to decide it's not there
+        * O(len(L)) for the loop * O(1) to test if e == L[i]
+        * Overall complexity is **O(n) - where n is len(L)**
+
+    * Linear search on **sorted** list: recap
+    ```Python
+    def search(L, e):
+        for i in range(len(L)):
+            if L[i] == e:
+                return True
+            if L[i] > e:
+                return False
+        return False
+    ```
+        * Better in terms of average case
+        * But still O(n)
+
+    * Bisection search implementation: recap
+    ```Python
+    def bisect_search2(L, e);
+        def bisect_search_helper(L, e, low, high):
+            if high == low:
+                return L[low] == e
+            mid = (low + high) // 2
+            if L[mid] == e:
+                return True
+            elif L[mid] == e:
+                if low == mid:
+                    return False
+                else:
+                    return bisect_search_helper(L, e, low, mid - 1)
+            else:
+                return bisect_search_helper(L, e, mid+1, high)
+        if len(L) == 0:
+            return False
+        else:
+            return bisect_search_helper(L, e, 0, len(L) - 1)
+    ```
+
+    * Searching a sorted list -- n is len(L)
+        * Using **linear search**, serach for an element is **O(n)**
+        * Using **binary search**, can search for an element in **O(log n)**
+            * Assumes the **list is sorted**!
+        * When does it make sense to **sort first then search**?
+            * SORT + O(log n) < O(n) => SORT < O(n) - O(log n)
+            * When sorting is less than O(n)
+
+        * **NEVER TRUE**!
+
+    * Amortized cost -- n is len(L)
+        * Why bother sorting first?
+        * In some cases, may **sort a lit once** then do **many searches**
+        * **AMORTIZE cost** of the sort over many searches
+        * SORT + K*O(log n) < K*O(n)
+            * for large K, **SORT time becomes irrelevant**, if cost of sorting is small enough
+
+    * Monkey sort
+        * Permutation sort/bogo sort
+
+    * Complexity of bogo sort
+    ```Python
+    def bogo_sort(L):
+        while not is_sorted(L):
+            random.shuffle(L)
+    ```
+        * Best case: **O(n) where n is len(L)** to check if sorted
+        * Worst case: O(?) it is **unbounded** if really unlucky
+
+    * Bubble sort
+        * **Compare consecutive pairs** of elements
+        * **Swap elements** in pairs such that smaller is first
+        * When reach end of list, **start over** again
+        * Stop when **no more swaps** have been made
+        * Largest unsorted element always at end after pass, so at most n passes
+
+    * Complexity of bubble sort
+    ```Python
+    def bubble_sort(L):
+        swap = False
+        while not swap:
+         swap = True
+        for j in range(1, len(L)):
+            swap = False
+            temp = L[j]
+            L[j] = L[j-1]
+            L[j-1] = temp
+    ```
+        * Inner for loop is for doing the **comparisons**
+        * Outer while loop is for doing **multiple passes** until no more swaps
+
+    * Selection sort
+        * First step
+            * Extract **minimum element**
+            * **Swap it** with element at **index 0**
+
+        * Subsequent step
+            * In remaining sublist, extract **minimum element**
+            * **Swap it** with the element at **index 1**
+
+        * Keep the left portion of the list sorted
+            * At i'th step, **first i elements in list are sorted**
+            * All other elements are bigger than first i elements
+
+    * Analysing selection sort
+        * Loop invariant
+            * Given prefix of list L[0:i] and suffic L[i+1:len(L)], then prefix is sorted and no element in prefix is larger than smallest element in suffix
+                1. Base case: prefix empty, suffix whole list - invariant true
+                2. Induction step: move minimum element from suffix to end of prefix. Since invariant true before move, prefix sorted after append
+                3. When exit, prefix is entire list, suffix empty, sorted

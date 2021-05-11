@@ -2493,3 +2493,96 @@ print(guess, 'is close to the cube root of', cube)
                 1. Base case: prefix empty, suffix whole list - invariant true
                 2. Induction step: move minimum element from suffix to end of prefix. Since invariant true before move, prefix sorted after append
                 3. When exit, prefix is entire list, suffix empty, sorted
+
+    * Complexity of selection sort
+    ```Python
+    def selection_sort(L):
+        suffixSt = 0
+        while suffixSt != len(L):
+            for i in range(suffixSt, len(L)):
+                if L[i] < L[suffixSt]:
+                    L[suffixSt], L[i] = L[i], L[suffixSt]
+            suffixSt += 1
+    ```
+        * Outer loop executes len(L) times
+        * Inner loop len(L) - i times
+        * Complexity of selection sort is **O(n**2) where n is len(L)**
+
+    * Merge sort
+        * Divide and conquer
+        * **Split list in half** until have sublists of only 1 element
+
+    * Merging sublists step
+    ```Python
+    def merge(left, right):
+        result = []
+        i, j = 0, 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(left[i])
+                j += 1
+        while i < len(left):
+            result.append(left[i])
+            i += 1
+        while j < len(right):
+            result.append(right[j])
+            j += 1
+        return result
+    ```
+
+    * Complexity of merging sublists step
+        * Go through two lists, only one pass
+        * Compare only **smallest elements in each sublist**
+        * O(len(left) + len(right)) copies elements
+        * O(len(longer list)) comparisons
+        * **Linear in length of the lists**
+
+    * Merge sort algorithm -- recursive
+    ```Python
+    def merge_sort(L):
+        if len(L) < 2:
+            return L[:]
+        else:
+            middle = len(L) // 2
+            left = merge_sort(L[:middle])
+            right = merge_sort(L[middle:])
+            return merge(left, right)
+    ```
+        * **Divide list** successively into halves
+        * Depth-first such that **conquer smallest pieces down one branch** first before moving to larger pieces
+       
+    * Complexity of merge sort
+        * At **first recursion level**
+            * n/2 elements in each list
+            * O(n) + O(n) = O(n) where n is len(L)
+        * At **second recursion level**
+            * n/4 elements in each list
+            * Two merges -> O(n) where n is len(L)
+        * Each recursion level is O(n) where n is len(L)
+        * **Dividing list in half** with each recursive call
+            * O(log(n)) where n is len(L)
+        * Overall complexity is **O(n log(n)) where n is len(L)**
+
+
+    * What do computer scientists do?
+        * They think computationally
+            * Abstractions, algorithms, automated execution
+        * Just like the three r's: reading, 'riting, and 'rithmetic - computational thinking is becoming a fundamental skill that every well-educated person will need
+
+    * The three A's of computational thinking
+        * Abstractions
+            * Choosing the right abstractions
+            * Operating in multiple layers of abstraction simultaneously
+            * Defining the relationships between abstraction layers
+
+        * Automation
+            * Think in terms of mechanising out abstractions
+            * Mechanisation is possible - because we have precise and exacting notations and modelsl and because there is some "machine" that can interpret our notations
+        
+        * Algorithms
+            * Language for describing automated processes
+            * Also allows abstraction of details
+

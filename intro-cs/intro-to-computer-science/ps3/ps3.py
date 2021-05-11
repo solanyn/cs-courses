@@ -3,9 +3,8 @@
 # The 6.0001 Word Game
 # Created by: Kevin Luu <luuk> and Jenna Wiens <jwiens>
 #
-# Name          : <your name>
-# Collaborators : <your collaborators>
-# Time spent    : <total time>
+# Name          : Andrew Chen
+# Time spent    : 2hrs 
 
 import math
 import random
@@ -16,7 +15,7 @@ CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 HAND_SIZE = 7
 
 SCRABBLE_LETTER_VALUES = {
-    'a': 1, 'b': 3, 'c': 3, 'd': 2, 'e': 1, 'f': 4, 'g': 2, 'h': 4, 'i': 1, 'j': 8, 'k': 5, 'l': 1, 'm': 3, 'n': 1, 'o': 1, 'p': 3, 'q': 10, 'r': 1, 's': 1, 't': 1, 'u': 1, 'v': 4, 'w': 4, 'x': 8, 'y': 4, 'z': 10
+        'a': 1, 'b': 3, 'c': 3, 'd': 2, 'e': 1, 'f': 4, 'g': 2, 'h': 4, 'i': 1, 'j': 8, 'k': 5, 'l': 1, 'm': 3, 'n': 1, 'o': 1, 'p': 3, 'q': 10, 'r': 1, 's': 1, 't': 1, 'u': 1, 'v': 4, 'w': 4, 'x': 8, 'y': 4, 'z': 10, '*': 0
 }
 
 # -----------------------------------
@@ -92,7 +91,11 @@ def get_word_score(word, n):
     returns: int >= 0
     """
     
-    pass  # TO DO... Remove this line when you implement this function
+    word = word.lower()
+    if len(word) < 1:
+        return 0
+
+    return sum([SCRABBLE_LETTER_VALUES[ch] for ch in word]) * max(7*len(word) - 3*(n - len(word)), 1) 
 
 #
 # Make sure you understand how this function works and what it does!
@@ -134,7 +137,8 @@ def deal_hand(n):
     """
     
     hand={}
-    num_vowels = int(math.ceil(n / 3))
+    num_vowels = int(math.ceil(n / 3)) - 1
+    hand['*'] = 1
 
     for i in range(num_vowels):
         x = random.choice(VOWELS)
@@ -143,7 +147,7 @@ def deal_hand(n):
     for i in range(num_vowels, n):    
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
-    
+
     return hand
 
 #
@@ -167,8 +171,13 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
+    new_hand = hand.copy()
+    
+    for ch in word.lower():
+        if new_hand.get(ch, 0) and new_hand.get(ch, 0) > 0:
+            new_hand[ch] -= 1
 
-    pass  # TO DO... Remove this line when you implement this function
+    return new_hand
 
 #
 # Problem #3: Test word validity
@@ -185,7 +194,14 @@ def is_valid_word(word, hand, word_list):
     returns: boolean
     """
 
-    pass  # TO DO... Remove this line when you implement this function
+    new_hand = hand.copy()
+    for ch in word.lower():
+        if not new_hand.get(ch, 0) or new_hand.get(ch, 0) < 1:
+            return False
+        else:
+            new_hand[ch] -= 1
+
+    return word.lower() in word_list or any([w in word_list for w in [word.lower().replace('*', v) for v in VOWELS]]) 
 
 #
 # Problem #5: Playing a hand
@@ -198,7 +214,7 @@ def calculate_handlen(hand):
     returns: integer
     """
     
-    pass  # TO DO... Remove this line when you implement this function
+    return sum(hand.values())
 
 def play_hand(hand, word_list):
 
@@ -263,8 +279,24 @@ def play_hand(hand, word_list):
 
     # Return the total score as result of function
 
+    total = 0
 
+    while calculate_handlen(hand) > 0:
+        print('Current hand: ')
+        display_hand(hand)
+        word = input('Enter word, or "!!" to indicate that you are finished: ')
+        if word.strip() == '!!':
+            return total
+        elif is_valid_word(word, hand, word_list):
+            score = get_word_score(word.lower(), calculate_handlen(hand))
+            total += score
+            print('\"{}\" earned {} points. Total: {} points'.format(word, score, total))
+        else:
+            print('That is not a valid word. Please choose another word.')
+        hand = update_hand(hand, word.lower())
 
+    print('Ran out of letters. Total score: {} points'.format(total))
+    return total
 #
 # Problem #6: Playing a game
 # 
@@ -296,8 +328,14 @@ def substitute_hand(hand, letter):
     letter: string
     returns: dictionary (string -> int)
     """
+    new_hand = hand.copy()
     
-    pass  # TO DO... Remove this line when you implement this function
+    if letter not in hand.keys():
+        return hand
+    else:
+        del new_hand[letter]
+        new_hand[random.choice([ch for ch in VOWELS+CONSONANTS if ch not in hand.keys()])] = 1    
+    return new_hand
        
     
 def play_game(word_list):
@@ -331,8 +369,26 @@ def play_game(word_list):
     word_list: list of lowercase strings
     """
     
-    print("play_game not implemented.") # TO DO... Remove this line when you implement this function
-    
+    n_hands = int(input('Enter total number of hands: '))
+    q = [deal_hand(HAND_SIZE) for i in range(n_hands)]
+    total = 0
+    while q:
+        hand = q.pop()
+        display_hand(hand)
+        sub = input('Would you like to substitute a letter? ')
+        if sub == 'yes':
+            letter = input('Which letter would you like to substitute? ')
+            hand = substitute_hand(hand, letter)
+        score = play_hand(hand, word_list)
+        total += score
+        print('Total score for this hand:', score)
+        print('----------')
+        replay = input('Would you like to replay the hand? ')
+        if replay == 'yes':
+            q.push(hand)
+
+    print('----------')
+    print('Total score over all hands:', total)
 
 
 #

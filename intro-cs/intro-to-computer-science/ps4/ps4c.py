@@ -1,7 +1,6 @@
 # Problem Set 4C
-# Name: <your name here>
-# Collaborators:
-# Time Spent: x:xx
+# Name: Andrew
+# Time Spent: 
 
 import string
 from ps4a import get_permutations
@@ -70,7 +69,8 @@ class SubMessage(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.valid_words = load_words(WORDLIST_FILENAME)
+        self.message_text = text
     
     def get_message_text(self):
         '''
@@ -78,7 +78,7 @@ class SubMessage(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
     def get_valid_words(self):
         '''
@@ -87,7 +87,7 @@ class SubMessage(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return self.valid_words.copy()
                 
     def build_transpose_dict(self, vowels_permutation):
         '''
@@ -108,8 +108,7 @@ class SubMessage(object):
         Returns: a dictionary mapping a letter (string) to 
                  another letter (string). 
         '''
-        
-        pass #delete this line and replace with your code here
+        return dict(zip(VOWELS_LOWER + VOWELS_UPPER + CONSONANTS_LOWER + CONSONANTS_UPPER, vowels_permutation.lower() + vowels_permutation.upper() + CONSONANTS_LOWER + CONSONANTS_UPPER))
     
     def apply_transpose(self, transpose_dict):
         '''
@@ -119,7 +118,7 @@ class SubMessage(object):
         on the dictionary
         '''
         
-        pass #delete this line and replace with your code here
+        return ''.join([transpose_dict[i] if i.isalpha() else i for i in self.message_text])
         
 class EncryptedSubMessage(SubMessage):
     def __init__(self, text):
@@ -132,7 +131,7 @@ class EncryptedSubMessage(SubMessage):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        super().__init__(text)
 
     def decrypt_message(self):
         '''
@@ -152,7 +151,14 @@ class EncryptedSubMessage(SubMessage):
         
         Hint: use your function from Part 4A
         '''
-        pass #delete this line and replace with your code here
+        results = []
+        for perm in get_permutations(VOWELS_LOWER):
+            results.append(super().apply_transpose(super().build_transpose_dict(perm)))
+
+        sums = [sum([is_word(self.valid_words, w.lower()) for w in s.split()]) for s in results]
+        idx_max = sums.index(max(sums))
+        return results[idx_max]
+            
     
 
 if __name__ == '__main__':
@@ -167,4 +173,21 @@ if __name__ == '__main__':
     enc_message = EncryptedSubMessage(message.apply_transpose(enc_dict))
     print("Decrypted message:", enc_message.decrypt_message())
      
-    #TODO: WRITE YOUR TEST CASES HERE
+    message = SubMessage("I enjoyed this class")
+    permutation = "eioua"
+    enc_dict = message.build_transpose_dict(permutation)
+    print("Original message:", message.get_message_text(), "Permutation:", permutation)
+    print("Expected encryption:", "I enjoyed this class")
+    print("Actual encryption:", message.apply_transpose(enc_dict))
+    enc_message = EncryptedSubMessage(message.apply_transpose(enc_dict))
+    print("Decrypted message:", enc_message.decrypt_message())
+ 
+    message = SubMessage("MIT is the best")
+    permutation = "ieoau"
+    enc_dict = message.build_transpose_dict(permutation)
+    print("Original message:", message.get_message_text(), "Permutation:", permutation)
+    print("Expected encryption:", "MIT is the best")
+    print("Actual encryption:", message.apply_transpose(enc_dict))
+    enc_message = EncryptedSubMessage(message.apply_transpose(enc_dict))
+    print("Decrypted message:", enc_message.decrypt_message())
+ 

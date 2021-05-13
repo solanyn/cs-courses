@@ -1,6 +1,6 @@
 # Problem Set 4A
 # Name: Andrew
-# Time Spent: 1:xx
+# Time Spent: 1:30
 
 def get_permutations(sequence):
     '''
@@ -28,6 +28,16 @@ def get_permutations(sequence):
         for perm in get_permutations(sequence[:i] + sequence[i+1:]):
             result += [ch + perm]
             
+    return result
+
+    result = []
+    if len(sequence) == 1:
+        return [sequence]
+
+    for i, ch in enumerate(sequence):
+        for perm in get_permutations(sequence[:i] + sequence[i+1:]):
+            result += [ch + perm]
+
     return result
 
 

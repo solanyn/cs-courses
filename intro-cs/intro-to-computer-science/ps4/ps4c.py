@@ -1,6 +1,6 @@
 # Problem Set 4C
 # Name: Andrew
-# Time Spent: 
+# Time Spent: 2hrs 
 
 import string
 from ps4a import get_permutations

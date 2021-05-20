@@ -99,15 +99,19 @@ class PhraseTrigger(Trigger):
     def is_phrase_in(self, text):
         parsed = text.lower()
         for p in string.punctuation:
-            if p in parsed:
-                parsed = parsed.replace(p, ' ')
+            parsed = ''.join([i if i != p else ' 'for i in parsed])
+        parsed = ' '.join(parsed.split())
 
-        return parsed in self.phrase.lower()
+        # TODO: Return true only if sublist is in same order as larger list
+        return all((subphrase in parsed for subphrase in self.phrase.split()))
 
 # Problem 3
 class TitleTrigger(PhraseTrigger):
     def __init__(self, phrase):
         super().__init__(phrase)
+
+    def evaluate(self, news):
+        return super().is_phrase_in(news.get_title())
 
 
 
@@ -158,8 +162,6 @@ def filter_stories(stories, triggerlist):
 
 #======================
 # User-Specified Triggers
-#======================
-# Problem 11
 def read_trigger_config(filename):
     """
     filename: the name of a trigger configuration file

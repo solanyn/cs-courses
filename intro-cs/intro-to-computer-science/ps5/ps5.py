@@ -99,11 +99,17 @@ class PhraseTrigger(Trigger):
     def is_phrase_in(self, text):
         parsed = text.lower()
         for p in string.punctuation:
-            parsed = ''.join([i if i != p else ' 'for i in parsed])
-        parsed = ' '.join(parsed.split())
+            parsed = ''.join([i if i != p else ' ' for i in parsed])
+        for ch in text.lower():
+            if ch in string.punctuation:
+                parsed.replace(ch, ' ')
 
-        # TODO: Return true only if sublist is in same order as larger list
-        return all((subphrase in parsed for subphrase in self.phrase.split()))
+        parsed = [s.strip() for s in parsed.split()]
+        phrase_list = self.phrase.split()
+
+        if len(phrase_list) > len(parsed):
+            return False
+        return any([parsed[i:i+len(phrase_list)] == phrase_list for i in range(len(parsed)-len(phrase_list)+1)])
 
 # Problem 3
 class TitleTrigger(PhraseTrigger):
@@ -113,33 +119,68 @@ class TitleTrigger(PhraseTrigger):
     def evaluate(self, news):
         return super().is_phrase_in(news.get_title())
 
-
-
 # Problem 4
-# TODO: DescriptionTrigger
+class DescriptionTrigger(PhraseTrigger):
+    def __init__(self, phrase):
+        super().__init__(phrase)
+
+    def evaluate(self, news):
+        return super().is_phrase_in(news.get_description())
 
 # TIME TRIGGERS
 
 # Problem 5
-# TODO: TimeTrigger
 # Constructor:
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
 #        Convert time from string to a datetime before saving it as an attribute.
+class TimeTrigger(Trigger):
+    def __init__(self, time):
+        d, b, Y, t = time.split()
+        H, M, S = t.split(':')
+        self.time = datetime.strptime("{} {} {} {}:{}:{}".format(d, b, Y, H, M, S), "%d %b %Y %H:%M:%S").replace(tzinfo=None)
 
 # Problem 6
-# TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    def __init__(self, time):
+        super().__init__(time)
 
+    def evaluate(self, news):
+        return self.time > news.get_pubdate().replace(tzinfo=None)
+
+class AfterTrigger(TimeTrigger):
+    def __init__(self, time):
+        super().__init__(time)
+
+    def evaluate(self, news):
+        return self.time < news.get_pubdate().replace(tzinfo=None)
 
 # COMPOSITE TRIGGERS
 
 # Problem 7
-# TODO: NotTrigger
+class NotTrigger(Trigger):
+    def __init__(self, T):
+        self.T = T
+    
+    def evaluate(self, news):
+        return not self.T.evaluate(news)
 
 # Problem 8
-# TODO: AndTrigger
+class AndTrigger(Trigger):
+    def __init__(self, T1, T2):
+        self.T1 = T1
+        self.T2 = T2
+
+    def evaluate(self, news):
+        return self.T1.evaluate(news) and self.T2.evaluate(news)
 
 # Problem 9
-# TODO: OrTrigger
+class OrTrigger(Trigger):
+    def __init__(self, T1, T2):
+        self.T1 = T1
+        self.T2 = T2
+
+    def evaluate(self, news):
+        return self.T1.evaluate(news) or self.T2.evaluate(news)
 
 
 #======================
@@ -153,15 +194,19 @@ def filter_stories(stories, triggerlist):
 
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
-    # TODO: Problem 10
-    # This is a placeholder
-    # (we're just returning all the stories, with no filtering)
-    return stories
+    filtered = []
+    for s in stories:
+        for T in triggerlist:
+            if T.evaluate(s):
+                filtered.append(s)
+                break
+    return filtered
 
 
 
 #======================
 # User-Specified Triggers
+#======================
 def read_trigger_config(filename):
     """
     filename: the name of a trigger configuration file
@@ -183,6 +228,17 @@ def read_trigger_config(filename):
     # to build triggers
 
     print(lines) # for now, print it so you see what it contains!
+    t_classes = {'DESCRIPTION': DescriptionTrigger, 'TITLE': TitleTrigger, 'BEFORE': BeforeTrigger, 'AFTER': AfterTrigger, 'AND': AndTrigger, 'OR': OrTrigger, 'NOT': NotTrigger}
+    t_list = []
+    t_dict = {}
+    for line in lines:
+        args = line.split(',')
+        if args[0].startswith('t'):
+            t_dict[args[0]] = t_classes[args[1]](args[2:])
+        elif args[0].startswith('ADD'):
+            for k in args[1:]:
+                t_list.append(t_dict[k])
+
 
 
 
@@ -200,7 +256,7 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories

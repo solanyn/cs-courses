@@ -233,12 +233,16 @@ def read_trigger_config(filename):
     t_dict = {}
     for line in lines:
         args = line.split(',')
+        print(args)
         if args[0].startswith('t'):
-            t_dict[args[0]] = t_classes[args[1]](args[2:])
+            if args[1] in ['OR', 'AND']:
+                t_dict[args[0]] = t_classes[args[1]](t_dict[args[2]], t_dict[args[3]])
+            else:
+                t_dict[args[0]] = t_classes[args[1]](args[2])
         elif args[0].startswith('ADD'):
             for k in args[1:]:
                 t_list.append(t_dict[k])
-
+    return t_list
 
 
 
@@ -266,7 +270,8 @@ def main_thread(master):
         scrollbar = Scrollbar(master)
         scrollbar.pack(side=RIGHT,fill=Y)
 
-        t = "Google & Yahoo Top News"
+        # t = "Google & Yahoo Top News"
+        t = "Google Top News"
         title = StringVar()
         title.set(t)
         ttl = Label(master, textvariable=title, font=("Helvetica", 18))
@@ -292,7 +297,7 @@ def main_thread(master):
             stories = process("http://news.google.com/news?output=rss")
 
             # Get stories from Yahoo's Top Stories RSS news feed
-            stories.extend(process("http://news.yahoo.com/rss/topstories"))
+            # stories.extend(process("http://news.yahoo.com/rss/topstories"))
 
             stories = filter_stories(stories, triggerlist)
 
